@@ -1,0 +1,13 @@
+// Entrance script link to Maya
+
+global proc string SouAngEntrance(int $runMain){
+    string $path_get = `whatIs SouAngEntrance`;
+    // Mel procedure found in: E:/Sp/code_dev/SouAng/userSetup.mel
+    $path_get = `match ".:/.*/SouAng" $path_get`;
+    if ($runMain==1){
+        print("run");
+    }
+    return $path_get;
+}
+
+evalDeferred -low "SouAngEntrance(1)";
