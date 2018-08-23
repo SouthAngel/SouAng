@@ -5,7 +5,13 @@ global proc string SouAngEntrance(int $runMain){
     // Mel procedure found in: E:/Sp/code_dev/SouAng/userSetup.mel
     $path_get = `match ".:/.*/SouAng" $path_get`;
     if ($runMain==1){
-        print("run");
+        string $file_mel = $path_get + "/entranceMel.mel";
+        string $file_py = $path_get + "/entrancePython.py";
+        string $script_py = "import sys\nimport os\nif os.path.normpath(r'"+$path_get+
+                            "') not in sys.path:\n    sys.path.insert(0, os.path.normpath(r'"
+                             +$path_get+"'))\nexecfile(r'"+$file_py+"')";
+        eval("source \""+$file_mel+"\"");
+        python($script_py);
     }
     return $path_get;
 }
