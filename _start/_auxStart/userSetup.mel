@@ -1,0 +1,11 @@
+// Entrance script link to Maya
+
+global proc SouAngEntrance(int $runMain){
+    string $TOOLNAME = "SouAng"
+    if ($runMain==1){
+        string $script_py = `format -s $TOOLNAME "import ^1s\nreload(^1s)\n^1s.run()"`
+        python($script_py);
+    }
+}
+
+evalDeferred -low "SouAngEntrance(1)";

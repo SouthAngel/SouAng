@@ -1,0 +1,17 @@
+// Entrance script link to Maya
+
+global proc string SouAngEntrance(int $runMain){
+    string $path_get = `whatIs SouAngEntrance`;
+    // Mel procedure found in: E:/Sp/code_dev/SouAng/_start/directStart.mel
+    $path_get = `substring $path_get 25 (size($path_get)-16)`;
+    if ($runMain==1){
+        // python($script_py);
+	string $path_exe_aux = $path_get + "/_auxStart/s.py";
+        string $method_aux = "saSetUp";
+        string $script_py = "execfile(r'"+$path_exe_aux+"')\n"+$method_aux+"(r'"+$path_exe_aux+"')";
+        python($script_py);
+    }
+    return $path_get;
+}
+
+evalDeferred -low "SouAngEntrance(1)";
