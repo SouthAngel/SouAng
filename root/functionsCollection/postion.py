@@ -7,5 +7,5 @@ from maya import cmds
 from smod.spy import smaya
 
 def randPos(rad=None, xyz=None):
-    rand_vector = smaya.randVector(rad, xyz)
-    cmds.move(rand_vector[0], rand_vector[1], rand_vector[2])
+    gen_pos = randVector(rad, xyz)
+    cmds.move(gen_pos[0], gen_pos[1], gen_pos[2])

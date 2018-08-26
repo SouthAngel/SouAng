@@ -4,6 +4,7 @@
 # E-mail: 1932554894@qq.com 
 # Time: 2018-08-23 23:27 
 import random
+from maya import cmds
 
 def randVector(rad=None, xyz=None):
     if not rad:

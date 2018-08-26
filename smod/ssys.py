@@ -3,7 +3,11 @@
 # Autor: PengCheng 
 # E-mail: 1932554894@qq.com 
 # Time: 2018-08-23 16:48 
-import sys, os, re, json
+import sys
+import os
+import re
+import cPickle
+import importlib
 
 
 # Path add for sys
@@ -67,17 +71,20 @@ class SuperReload(object):
             self.file = path_file
 
     def store(self):
+        if not os.path.isdir(StorePath.TEMP):
+            os.mkdir(StorePath.TEMP)
         with open(self.file, 'wb') as opf:
-            json.dump(sys.modules.keys(), opf)
+            cPickle.dump(sys.modules.keys(), opf)
 
     def removeAll(self):
         if not os.path.isfile(self.file):
             raise RuntimeError("Initialize has not store using modules!")
         with open(self.file, 'rb') as opf:
-            mod_keys = json.load(opf)
-        for k not in mod_keys:
-            del sys.modules()[k]
-            print("Remove <%s>"%k)
+            mod_keys = cPickle.load(opf)
+        for k in sys.modules.keys():
+            if k not in mod_keys:
+                del sys.modules[k]
+                print("Remove <%s>"%k)
 
     @staticmethod
     def reload(k_m, reg=0):
@@ -90,6 +97,7 @@ class SuperReload(object):
         else:
             if k_m in dic_mods.keys():
                 reload(dic_mods[k_m])
+                print('Reload <%s>'%k)
             else:
                 print('Not found <%s> in modules'%k_m)
 
@@ -97,7 +105,7 @@ class SuperReload(object):
 # Gloabl config file parsing
 class Gconfig(object):
     FILE_NAME = '.config'
-    file = os.path.join(StorePath.TEMP, FILE_NAME)
+    file = os.path.join(StorePath.TOOL, FILE_NAME)
     CONFIG = {}
 
     def __init__(self):
@@ -110,14 +118,13 @@ class Gconfig(object):
             self.parsLine(iter_read)
             iter_read = config_fp.readline()
         config_fp.close()
-        print('read')
+        return self.CONFIG
 
-    def parsLine(line):
+    def parsLine(self, line):
         line = line.strip()
         if not line.startswith("#"):
             split_ = line.split("=")
             if len(split_) == 2:
                 split_ = map(lambda x: x.strip(), split_)
                 self.CONFIG[split_[0]] = split_[1]
-        print(self.CONFIG)
 
