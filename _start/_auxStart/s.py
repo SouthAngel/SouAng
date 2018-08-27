@@ -12,7 +12,7 @@ def saSetUp(path):
     path_using = os.path.dirname(path_get_norm)
     if path_using not in sys.path:
         sys.path.insert(0, path_using)
-    install()
+    saInstall()
 
     import SouAng
     SouAng.run()
