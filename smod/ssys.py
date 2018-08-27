@@ -7,13 +7,24 @@ import sys
 import os
 import re
 import cPickle
-import importlib
 
 
 # Path add for sys
 def safeAddSysPath(path):
     if path not in sys.path:
         sys.path.insert(0, path)
+
+# Make ture path exits
+def mtpath(path, ford=0):
+    if ford == 0:
+        path_dir = os.path.dirname(path)
+        if not os.path.isdir(path_dir):
+            os.makedirs(path_dir)
+        with open(path, 'wb') as opf:
+            opf.write('')
+    else:
+        if not os.path.isdir(path):
+            os.makedirs(path)
 
 # Path deal
 def splitPath_(path):

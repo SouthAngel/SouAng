@@ -8,8 +8,10 @@ from SouAng.smod import ssys
 
 
 # Menu command
-def reloadAll():
+def refresh():
     ssys.SuperReload().removeAll()
+    import SouAng
+    SouAng.run()
 
 
 class InitUi(object):
@@ -19,14 +21,14 @@ class InitUi(object):
     LIST_MENUS = (
             ('', 'Tools List'),
             ('', 'Tools Find'),
-            ('', 'Tools Mini'),
-            ('reloadAll()', 'SuperReload'),
+            ('', 'Collection'),
+            ('refresh()', 'Refresh'),
             )
     LIST_SHELF = (
             ('', 'List'),
             ('', 'Find'),
-            ('', 'Mini'),
-            ('reloadAll()', 'Reload'),
+            ('', 'Collection'),
+            ('refresh()', 'Refresh'),
             )
 
     def __init__(self):

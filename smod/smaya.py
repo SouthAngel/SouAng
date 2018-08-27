@@ -16,4 +16,7 @@ def randVector(rad=None, xyz=None):
         mxyz.append(random.uniform(i[0], i[1]))
     return mxyz
     
+def simpleWarn(message='Get some wrong!'):
+    cmds.confirmDialog(title="Warn",message=message,button="OK")
+
 
