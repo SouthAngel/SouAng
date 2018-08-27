@@ -1,13 +1,16 @@
-<collection>
-	<plugin name="tp1">
+<collection name='root'>
+<group name='testGrp'>
+	<plugin name="tp1" >
 		import sys
 		print(sys.path)
 	</plugin>
-<plugin name="tp2">
+	<plugin name="tp2" >
 		import sys
 		print('tp2')
-</plugin>
-<plugin name="tp1">
+	</plugin>
+</group>
+
+<plugin name="tp1" >
 		import sys
 		print('tp3')
 </plugin>
