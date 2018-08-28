@@ -1,14 +1,26 @@
-<collection name='root'>
-<group name='testGrp'>
+<collection name="root">
+<group name="DemoGroup">
+<plugin name="DemoPlugin" name_cn="示例" description="Example tool" icon_path="">
+    print('Example Demo')
+</plugin>
+</group>
+<group name="testGrp">
 	<plugin name="tp1" >
 		import sys
 		print(sys.path)
 	</plugin>
 	<plugin name="tp2" >
 		import sys
-		print('tp2')
+		def testprint():
+			print('tp2')
 	</plugin>
 </group>
+
+<plugin name="tp_a1" >
+	import sys
+	def testprint():
+		print('tp2')
+</plugin>
 
 <plugin name="tp1" >
 		import sys

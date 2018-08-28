@@ -3,20 +3,27 @@
 # Autor: PengCheng 
 # E-mail: 1932554894@qq.com 
 # Time: 2018-08-25 19:13 
+import os
 import xml.sax
 import sqlite3
 from SouAng.smod import ssys
 
 
+FILE_CONFIG = ssys.StorePath.TOOL + '\\plugins.xml'
+
+
 class PluginData(object):
     NAME_TABLE = 'PLUGINS_CACHE'
     FILE = ssys.StorePath.TEMP + '\\plugins.cache'
+    KEY_TIME_MODIFY = 'timeModifyPluginCache'
     STUCT_TABLE = '''
     ID  INTEGER  PRIMARY  KEY  AUTOINCREMENT
     NAME  TEXT  NOT NULL
+    NAME_CN  TEXT
     NAME_PATH  TEXT  NOT NULL
     COMMAND  TEXT  NOT NULL
     DESCRIPTION  TEXT
+    ICON_PATH  TEXT
     '''
 
     def __init__(self):
@@ -33,9 +40,11 @@ class PluginData(object):
         script = 'CREATE TABLE IF NOT EXISTS %s (%s);'%(self.NAME_TABLE, self.line_cache[2])
         self.db.execute(script)
         self.db.commit()
+        gData = ssys.GData()
+        gData[self.KEY_TIME_MODIFY] = fileModfiyTime()
 
     def cacheLines(self):
-        # [line_list, id_list, line_string, id_string]
+        # [line_list, head_list, line_string, head_string]
         res = [self.parseStuctLines()]
         res.append([x.split(' ')[0] for x in res[0]])
         res.append(', '.join(res[0]))
@@ -51,24 +60,21 @@ class PluginData(object):
                 res.append(line_strip)
         return res
 
-    def checkUpdata(self):
-        print('checkUpdata')
 
     def updata(self):
         print('updata')
 
     def find(self, found):
-        script = 'SELECT * FROM %s WHERE column LIKE \'%%s%\''%(self.NAME_TABLE, found)
-        print('find')
+        script = 'SELECT * FROM {} WHERE {} LIKE \'%{}%\''.format(self.NAME_TABLE, self.line_cache[1][3], found)
+        return self.db.execute(script)
 
     def outputAll(self):
-        for i in self.db.execute('SELECT * FROM %s'%self.NAME_TABLE):
-            print(i)
+        return self.db.execute('SELECT * FROM %s'%self.NAME_TABLE)
 
     def append(self, tub):
         script = 'INSERT INTO %s (<keys>) VALUES (<values>)'%self.NAME_TABLE
         script = script.replace('<keys>', self.line_cache[3][4:])
-        script = script.replace('<values>', ' ,'.join(['\'%s\''%x for x in tub]))
+        script = script.replace('<values>', ' ,'.join(['\'%s\''%x.replace('\'', '\'\'') for x in tub]))
         self.db.execute(script)
 
     def update(self, content, fiter):
@@ -79,44 +85,78 @@ class ParseXml(xml.sax.ContentHandler):
 
     def __init__(self):
         self.xpath = []
+        self.indentPos = -1
         self.type = ''
         self.content = ''
         self.attribute = None
+        self.db_write = PluginData()
+        self.db_write.initTable()
+
+    def safeGetAttr(self, key):
+        if key in self.attribute:
+            return self.attribute[key]
+        else:
+            return ''
 
     def startDocument(self):
         print('startDocument')
 
+    def formatItemData(self):
+        # item_data [name, name_cn, xpath, content, description, icon_path]
+        # item_data [0   , 1      , 2    , 3      , 4          , 5        ]
+        item_data = ['', '', '', '', '', '']
+        item_data[0] = self.safeGetAttr('name')
+        item_data[1] = self.safeGetAttr('name_cn')
+        item_data[2] = '-:'.join(self.xpath)
+        item_data[3] = self.content
+        item_data[4] = self.safeGetAttr('description')
+        item_data[5] = self.safeGetAttr('icon_path')
+        return item_data
+
     def startElement(self, name, attrs):
         self.type = name
+        self.indentPos = -1
         self.attribute = attrs
-        self.xpath.append(attrs['name'])
+        self.xpath.append(self.safeGetAttr('name'))
         self.content = ''
-        print('startElement')
-        print(name, attrs.items())
 
     def characters(self, content):
-        self.content += content
+        if self.indentPos == -1:
+            if content.strip():
+                indentLine = content.lstrip()
+                self.indentPos = len(content) - len(indentLine)
+                self.content += indentLine
+        else:
+            self.content += content[self.indentPos:]
+            if content == '\n':
+                self.content += content
 
     def endElement(self, name):
-        print('endElement')
         if name == 'plugin':
-            print(self.attribute['name'])
-            print(self.xpath)
-            print(self.content)
-        print(name+'/End')
+            self.db_write.append(self.formatItemData())
+            print('>>Cache item --%s--'%self.safeGetAttr('name'))
         self.xpath.pop()
 
     def endDocument(self):
-        print('endDocument')
+        self.db_write.db.commit()
 
 
 def parseFile():
-    file_config = ssys.StorePath.TOOL + '\\plugins.xml'
     parser = xml.sax.make_parser()
     parser.setFeature(xml.sax.handler.feature_namespaces, 0)
     xml_handler = ParseXml()
     parser.setContentHandler(xml_handler)
-    parser.parse(file_config)
+    parser.parse(FILE_CONFIG)
+
+
+def fileModfiyTime():
+    return os.stat(FILE_CONFIG).st_mtime
+
+
+def checkUpdata():
+    if ssys.GData().get(PluginData.KEY_TIME_MODIFY) != fileModfiyTime():
+        print('Update plugin list cache')
+        parseFile()
 
 
 if __name__ == '__main__':
@@ -125,5 +165,10 @@ if __name__ == '__main__':
 #     testObj.initTable()
 #     print(testObj.append(['a', 'b', 'c', 'd']))
 #     testObj.outputAll()
+#     checkUpdata()
     parseFile()
+    pTest = PluginData()
+    for i in pTest.find(''):
+        print(i)
+    del pTest
     
