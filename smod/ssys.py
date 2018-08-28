@@ -20,8 +20,9 @@ def mtpath(path, ford=0):
         path_dir = os.path.dirname(path)
         if not os.path.isdir(path_dir):
             os.makedirs(path_dir)
-        with open(path, 'wb') as opf:
-            opf.write('')
+        if not os.path.isfile(path):
+            with open(path, 'wb') as opf:
+                opf.write('')
     else:
         if not os.path.isdir(path):
             os.makedirs(path)
@@ -139,3 +140,39 @@ class Gconfig(object):
                 split_ = map(lambda x: x.strip(), split_)
                 self.CONFIG[split_[0]] = split_[1]
 
+
+# Data stroe
+class GData(object):
+    FILE = StorePath.TEMP + '\\GData.data'
+
+    def __init__(self):
+        super(GData, self).__init__()
+        self.d = {}
+        if os.path.isfile(self.FILE):
+            self.read()
+        mtpath(self.FILE)
+    
+    def read(self):
+        with open(self.FILE, 'rb') as opf:
+            self.d = cPickle.load(opf)
+
+    def write(self):
+        with open(self.FILE, 'wb') as opf:
+            cPickle.dump(self.d, opf)
+            
+    def __getitem__(self, k):
+        if k not in self.d:
+            return None
+        return self.d[k]
+    
+    def get(self, k):
+        return self.__getitem__(k)
+
+    def __setitem__(self, k, v):
+        self.d[k] = v
+
+    def __delitem__(self, k):
+        del self.d[k]
+
+    def __del__(self):
+        self.write()
