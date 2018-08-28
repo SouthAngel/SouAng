@@ -165,8 +165,8 @@ if __name__ == '__main__':
 #     testObj.initTable()
 #     print(testObj.append(['a', 'b', 'c', 'd']))
 #     testObj.outputAll()
-#     checkUpdata()
-    parseFile()
+    checkUpdata()
+#     parseFile()
     pTest = PluginData()
     for i in pTest.find(''):
         print(i)
