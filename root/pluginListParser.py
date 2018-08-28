@@ -82,6 +82,7 @@ class PluginData(object):
 
 
 class ParseXml(xml.sax.ContentHandler):
+    MARK_SPLIT_XPATH = '-:'
 
     def __init__(self):
         self.xpath = []
@@ -107,7 +108,7 @@ class ParseXml(xml.sax.ContentHandler):
         item_data = ['', '', '', '', '', '']
         item_data[0] = self.safeGetAttr('name')
         item_data[1] = self.safeGetAttr('name_cn')
-        item_data[2] = '-:'.join(self.xpath)
+        item_data[2] = self.MARK_SPLIT_XPATH.join(self.xpath)
         item_data[3] = self.content
         item_data[4] = self.safeGetAttr('description')
         item_data[5] = self.safeGetAttr('icon_path')
