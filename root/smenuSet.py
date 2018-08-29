@@ -13,22 +13,25 @@ def refresh():
     import SouAng
     SouAng.run()
 
+def listAllShow():
+    import SouAng.root.listAll as listA
+    listA.SWIN.show()
 
 class InitUi(object):
     NAME_LABEL = 'SouAng'
     NAME_MENU = 'SouAngMenu'
     NAME_SHELF = 'SouAngShelf'
     LIST_MENUS = (
-            ('', 'Tools List'),
+            ('listAllShow', 'Tools List'),
             ('', 'Tools Find'),
             ('', 'Collection'),
-            ('refresh()', 'Refresh'),
+            ('refresh', 'Refresh'),
             )
     LIST_SHELF = (
             ('', 'List'),
             ('', 'Find'),
             ('', 'Collection'),
-            ('refresh()', 'Refresh'),
+            ('refresh', 'Refresh'),
             )
 
     def __init__(self):
@@ -36,7 +39,7 @@ class InitUi(object):
 
     @staticmethod
     def wrapIm(scrpit):
-        return 'import SouAng.root.smenuSet as SouAngm\nSouAngm.' + scrpit
+        return 'import SouAng.root.smenuSet as SouAngm\nSouAngm.%s()'%scrpit
 
     def buildMenu(self):
         mMenuLayout = 'MayaWindow'

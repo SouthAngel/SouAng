@@ -26,13 +26,22 @@ class ListTreeView(QtWidgets.QTreeView):
     def __init__(self):
         super(ListTreeView, self).__init__()
         self.setModel(ListMod())
-        self.header().hide()
+        self.buildAll()
+#         self.header().hide()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.on_right_clicked)
 
+    def hideColumns(self, list_col):
+        for i in iter(list_col):
+            self.hideColumn(i)
+
     def on_right_clicked(self, *args):
-        self.model().test()
         print('on_right_clicked', args)
+
+    def buildAll(self, *args):
+        self.model().update()
+        self.hideColumns((3, 4, 5))
+        self.expandAll()
 
 
 class ListMod(QtGui.QStandardItemModel):
@@ -53,18 +62,27 @@ class ListMod(QtGui.QStandardItemModel):
         pluginListParser.checkUpdata()
         db = pluginListParser.PluginData()
         stuct_grp = {'root': QtGui.QStandardItem('root')}
-        self.setItem(stuct_grp['root'])
+        col_list = [QtGui.QStandardItem() for i in xrange(6)]
+        self.appendRow([stuct_grp['root']] + col_list)
         for line in db.outputAll():
-            if line[3] not in stuct_grp:
-                list_split = xpath.split(pluginListParser.ParseXml.MARK_SPLIT_XPATH).pop()
-                len_x = len(list_split)
-                list_grps = [pluginListParser.ParseXml.MARK_SPLIT_XPATH.join(list_split[:i+1]) for i in xrange(len_x)]
+            list_split = line[3].split(pluginListParser.ParseXml.MARK_SPLIT_XPATH)
+            list_split.pop()
+            len_x = len(list_split)
+            list_grps = [pluginListParser.ParseXml.MARK_SPLIT_XPATH.join(list_split[:i+1]) for i in xrange(len_x)]
+            if list_grps[-1] not in stuct_grp:
                 for i in xrange(1, len_x):
                     if list_grps[i] not in stuct_grp:
                         item_grp = QtGui.QStandardItem(list_split[i])
-                        stuct_grp[list_split[i]] = item_grp
-                        stuct_grp[list_split[i-1]].appendRow(item_grp)
-                
+                        stuct_grp[list_grps[i]] = item_grp
+                        stuct_grp[list_grps[i-1]].appendRow(item_grp)
+            line_plugin = []
+            for each in line:
+                item_col = QtGui.QStandardItem()
+                if not isinstance(each, unicode):
+                    each = unicode(each)
+                item_col.setText(each)
+                line_plugin.append(item_col)
+            stuct_grp[list_grps[-1]].appendRow(line_plugin)
         print('update')
 
 

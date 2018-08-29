@@ -1,6 +1,9 @@
 # Git
 .git/
 
+# PyCharm
+.idea/
+
 # Vim
 *.swp
 *.swpx
