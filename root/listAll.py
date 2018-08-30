@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
 # Autor: PengCheng 
-# E-mail: 1932554894@qq.com 
-# Time: 2018-08-27 14:17 
+# E-mail: southAngel@126.com 
+# Time: 2018-08-30 23:29 
 from PySide2 import QtWidgets, QtGui, QtCore
 from SouAng.smod import sgui
 from SouAng.root import pluginListParser
@@ -28,13 +28,30 @@ class ListTreeView(QtWidgets.QTreeView):
         super(ListTreeView, self).__init__()
         self.setModel(ListMod())
         self.buildAll()
+        self.setSelectionMode(self.SingleSelection)
+        self.setSelectionBehavior(self.SelectRows)
+        self.setAnimated(1)
+        self.setIndentation(4)
 #         self.header().hide()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.clicked.connect(self.on_clicked)
         self.customContextMenuRequested.connect(self.on_right_clicked)
+        self.doubleClicked.connect(self.on_double_clicked)
 
     def hideColumns(self, list_col):
         for i in iter(list_col):
             self.hideColumn(i)
+    
+    @property
+    def selectedContents(self):
+        return map(lambda x: x.data(), self.selectedIndexes())
+
+    def on_clicked(self):
+        print('Click')
+
+    def on_double_clicked(self):
+        print(self.selectedContents)
+        print('Double click')
 
     def on_right_clicked(self, cursorPos):
         list_content = (
@@ -51,7 +68,8 @@ class ListTreeView(QtWidgets.QTreeView):
 
     def buildAll(self, *args):
         self.model().update()
-        self.hideColumns((3, 4, 5))
+        # Hide ID
+        self.hideColumn(3)
         self.expandAll()
 
     def tpr(self, *args):
@@ -73,13 +91,30 @@ class ListMod(QtGui.QStandardItemModel):
         print('test')
 
     def update(self):
+        def initItem(item=None):
+            item_w = QtGui.QStandardItem()
+            if item:
+                item_w.setText(item)
+            item_w.setEditable(False)
+            return item_w
+        def fillLineItem(item=None, fill=6):
+            list_res = [initItem() for i in xrange(fill-1)]
+            if item:
+                list_res.insert(0, item)
+            else:
+                list_res.insert(0, initItem())
+            return list_res
+        def resortList(list_num, list_input):
+            return [list_input[i] for i in list_num]
         self.clear()
         pluginListParser.checkUpdata()
         db = pluginListParser.PluginData()
-        stuct_grp = {'root': QtGui.QStandardItem('root')}
-        col_list = [QtGui.QStandardItem() for i in xrange(6)]
-        self.appendRow([stuct_grp['root']] + col_list)
+        line_root = fillLineItem(initItem('Root'))
+        stuct_grp = {'root': line_root[0]}
+        self.appendRow(line_root)
         for line in db.outputAll():
+            # line (ID, NAME, NAME_CN, NAME_PATH, COMMAND, DESCRIPTION, ICON_PATH)
+            #      (0 , 1   , 2      , 3        , 4      , 5          , 6        )
             list_split = line[3].split(pluginListParser.ParseXml.MARK_SPLIT_XPATH)
             list_split.pop()
             len_x = len(list_split)
@@ -87,12 +122,12 @@ class ListMod(QtGui.QStandardItemModel):
             if list_grps[-1] not in stuct_grp:
                 for i in xrange(1, len_x):
                     if list_grps[i] not in stuct_grp:
-                        item_grp = QtGui.QStandardItem(list_split[i])
-                        stuct_grp[list_grps[i]] = item_grp
+                        item_grp = fillLineItem(initItem(list_split[i]))
+                        stuct_grp[list_grps[i]] = item_grp[0]
                         stuct_grp[list_grps[i-1]].appendRow(item_grp)
             line_plugin = []
-            for each in line:
-                item_col = QtGui.QStandardItem()
+            for each in resortList((1, 2, 6, 0), line):
+                item_col = initItem()
                 if not isinstance(each, unicode):
                     each = unicode(each)
                 item_col.setText(each)
