@@ -19,6 +19,7 @@ class ListMainWin(QtWidgets.QDialog):
     def setInit(self):
         self.layout_m.addWidget(self.view_tree)
         self.setLayout(self.layout_m)
+        self.setWindowTitle(u'Tools')
 
 
 class ListTreeView(QtWidgets.QTreeView):
@@ -35,13 +36,27 @@ class ListTreeView(QtWidgets.QTreeView):
         for i in iter(list_col):
             self.hideColumn(i)
 
-    def on_right_clicked(self, *args):
-        print('on_right_clicked', args)
+    def on_right_clicked(self, cursorPos):
+        list_content = (
+                ('Open', self.tpr),
+                ('Add favorite', self.tpr),
+                ('To shelf', self.tpr),
+                )
+        menu = QtWidgets.QMenu(self)
+        for each in list_content:
+            action = QtWidgets.QAction(each[0], self)
+            action.toggled.connect(each[1])
+            menu.addAction(action)
+        menu.exec_(self.mapToGlobal(cursorPos)+QtCore.QPoint(0, 22))
 
     def buildAll(self, *args):
         self.model().update()
         self.hideColumns((3, 4, 5))
         self.expandAll()
+
+    def tpr(self, *args):
+        print(self.sender())
+        print(args)
 
 
 class ListMod(QtGui.QStandardItemModel):
