@@ -3,6 +3,7 @@
 # Autor: PengCheng 
 # E-mail: southAngel@126.com 
 # Time: 2018-08-30 23:29 
+import os
 from PySide2 import QtWidgets, QtGui, QtCore
 from SouAng.smod import sgui, smaya
 from SouAng.root import pluginListParser
@@ -34,7 +35,7 @@ class ListTreeView(QtWidgets.QTreeView, sgui.VeiwPlus):
         self.buildAll()
         self.setSelectionMode(self.SingleSelection)
         self.setSelectionBehavior(self.SelectRows)
-        self.setAnimated(1)
+#         self.setAnimated(1)
         self.setIndentation(6)
         self.header().hide()
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -54,6 +55,7 @@ class ListTreeView(QtWidgets.QTreeView, sgui.VeiwPlus):
     
     # Slot method
     def on_clicked(self):
+        self.area_display.update(('', 'name', 'name_cn', 'dd'))
         if self.area_display.isHidden():
             self.area_display.show()
         print('Click')
@@ -191,32 +193,66 @@ class ListDelegate(QtWidgets.QItemDelegate):
         return initSize
 
 
-class PorpertyDisplay(QtWidgets.QWidget):
+class PorpertyDisplay(QtWidgets.QFrame):
 
     def __init__(self):
         super(PorpertyDisplay, self).__init__()
+        self.type = ['Grp', QtWidgets.QLabel()]
+        self.name = [None, QtWidgets.QLabel()]
+        self.name_cn = [None, QtWidgets.QLabel()]
+        self.icon = [None, QtWidgets.QLabel()]
+        self.description = [None, QtWidgets.QLabel()]
+        self.layout_m = QtWidgets.QVBoxLayout()
         self.setFixedSize(155, 251)
+        self.setFrameShape(self.Panel)
+        self.setFrameShadow(self.Sunken)
+        self.setLayout(self.layout_m)
+        self.layout_m.addWidget(self.icon[1])
+        self.layout_m.addWidget(self.name[1])
+        self.layout_m.addWidget(self.name_cn[1])
+        self.layout_m.addWidget(self.description[1])
+        self.icon[1].setPixmap(QtGui.QPixmap())
 
-    def update(self):
+    @staticmethod
+    def ifSetText(item):
+        if item[0]:
+            item[1].setText(item[0])
+        else:
+            item[1].setText('')
+
+    def update(self, list_i):
+        list_exe = (self.setIcon, self.setName, self.setNameCn, self.setDescription)
+        for i, item in enumerate(list_i):
+            list_exe[i](item)
         print('update')
 
-    def setIcon(self):
-        print('setIcon')
+    def setIcon(self, path_pic):
+        self.icon[0] = path_pic
+        if os.path.isfile(self.icon[0]):
+            self.icon[1].pixmap().load(self.icon[0])
 
-    def setName(self):
-        print('setName')
+    def setName(self, str_i):
+        self.name[0] = str_i
+        self.ifSetText(self.name)
 
-    def setNameCn(self):
-        print('setNameCn')
+    def setNameCn(self, str_i):
+        self.name_cn[0] = str_i
+        self.ifSetText(self.name_cn)
 
-    def setGroup(self):
-        print('setGroup')
+    def setDescription(self, str_i):
+        self.description[0] = str_i
+        self.ifSetText(self.description)
+
+    def setGroup(self, str_i):
+        self.grp[0] = str_i
+        self.ifSetText(self.grp)
 
     def setCommand(self):
         print('setCommand')
 
     def paintEvent(self, event):
-        print('OoOo')
+        super(PorpertyDisplay, self).paintEvent(event)
+#         print('OoOo')
 
 
 SWIN = ListMainWin()

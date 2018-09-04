@@ -28,7 +28,7 @@ class InitUi(object):
             ('refresh', 'Refresh'),
             )
     LIST_SHELF = (
-            ('', 'List'),
+            ('listAllShow', 'List'),
             ('', 'Find'),
             ('', 'Collection'),
             ('refresh', 'Refresh'),
