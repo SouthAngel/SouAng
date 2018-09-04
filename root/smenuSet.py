@@ -17,6 +17,11 @@ def listAllShow():
     import SouAng.root.listAll as listA
     listA.SWIN.show()
 
+def oneKeyShow():
+    from SouAng.root import oneKey
+    oneKey.SWIN.show()
+
+
 class InitUi(object):
     NAME_LABEL = 'SouAng'
     NAME_MENU = 'SouAngMenu'
@@ -25,12 +30,14 @@ class InitUi(object):
             ('listAllShow', 'Tools List'),
             ('', 'Tools Find'),
             ('', 'Collection'),
+            ('oneKeyShow', 'One Key'),
             ('refresh', 'Refresh'),
             )
     LIST_SHELF = (
             ('listAllShow', 'List'),
             ('', 'Find'),
             ('', 'Collection'),
+            ('oneKeyShow', 'One Key'),
             ('refresh', 'Refresh'),
             )
 

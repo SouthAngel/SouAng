@@ -16,6 +16,13 @@ WIN_MAYA_MAIN = wrapInstance(long(mui.MQtUtil.mainWindow()), QtWidgets.QMainWind
 def intoMayaMain(win):
     win.setParent(WIN_MAYA_MAIN)
 
+def setStyle(obj, f='main'):
+    path_style_dir = __file__[:-13] + 'resource\\style'
+    path_style_file = '%s\\%s.qss'%(path_style_dir, f)
+    qfile = open(path_style_file, 'rb')
+    obj.setStyleSheet(qfile.read())
+    qfile.close()
+
 
 class VeiwPlus(QtWidgets.QAbstractItemView):
 
@@ -33,3 +40,28 @@ class VeiwPlus(QtWidgets.QAbstractItemView):
         else:
             return self.findIndexSibling(sel[0], lineOne).data()
 
+
+class DragMove(object):
+
+    def __init__(self):
+        super(DragMove, self).__init__()
+        self.isMousePressed = False
+        self.posWhenPressed = QtCore.QPoint(0, 0)
+        self.posDrviedWhenPressed = [QtCore.QPoint(0, 0)]
+        self.drived = [self]
+
+    def setDrived(self, drived):
+        self.drived = drived
+
+    def mousePressEvent(self, event):
+        self.posWhenPressed = event.globalPos()
+        self.posDrviedWhenPressed = map(lambda x: x.pos(), self.drived)
+        self.isMousePressed = True
+
+    def mouseReleaseEvent(self, event):
+        self.isMousePressed = False
+
+    def mouseMoveEvent(self, event):
+        vector_moved = event.globalPos() - self.posWhenPressed
+        for i, each in enumerate(self.drived):
+            each.move(self.posDrviedWhenPressed[i]+vector_moved)
