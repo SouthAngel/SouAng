@@ -27,11 +27,11 @@ class IndexMain(sgui.DragMove, QtWidgets.QFrame):
         self.setFrameShape(self.Panel)
         self.setFrameShadow(self.Sunken)
         self.setFixedSize(486, 184)
-        self.setObjectName('testGreen')
         sgui.setStyle(self)
         sgui.moveRelative((0.52, 0.68), self)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.popMenu)
+        self.line_search.textChanged.connect(self.view_list.mod.findKeys)
         print('initSet')
 
     def popMenu(self, pos):
@@ -49,8 +49,10 @@ class IndexMain(sgui.DragMove, QtWidgets.QFrame):
     def configUi(self):
         print(self.size(), self.pos())
 
-    def focusOutEvent(self, event):
-        print('Focus out')
+    def show(self):
+        super(IndexMain, self).show()
+        self.line_search.setFocus()
+
 
 class SearchLine(QtWidgets.QLineEdit):
 
@@ -59,20 +61,25 @@ class SearchLine(QtWidgets.QLineEdit):
 
     def focusOutEvent(self, event):
         super(SearchLine, self).focusOutEvent(event)
-        print('focusOutEvent')
+        self.parent().close()
 
 
 class IndexListView(QtWidgets.QListView):
 
     def __init__(self):
         super(IndexListView, self).__init__()
-        self.setModel(IndexListModel())
+        self.mod = IndexListModel()
+        self.setModel(self.mod)
         self.setViewMode(self.IconMode)
         self.setMovement(self.Static)
         self.setSpacing(4)
-        self.model().findKeys('')
+        self.mod.findKeys('')
         self.setResizeMode(self.Adjust)
 #         self.setGridSize(QtCore.QSize(32, 32))
+        self.clicked.connect(self.on_clicked)
+
+    def on_clicked(self, index):
+        self.mod.included[index.data()][0]()
 
 
 class IndexListModel(QtGui.QStandardItemModel):
@@ -84,8 +91,12 @@ class IndexListModel(QtGui.QStandardItemModel):
 
     def update(self):
         self.clear()
+        brush_bg = QtGui.QBrush(QtGui.QColor(49, 49, 49))
         for each in self.included.iterkeys():
             item = QtGui.QStandardItem(each)
+            item.setToolTip(self.included[each][1])
+            item.setSelectable(0)
+            item.setBackground(brush_bg)
             self.appendRow(item)
         print('update')
 

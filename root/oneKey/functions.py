@@ -3,7 +3,7 @@
 # Autor: PengCheng 
 # E-mail: southAngel@126.com 
 # Time: 2018-09-05 02:29 
-from SouAng.smod import smaya
+from SouAng.smod import ssys, smaya
 
 
 def testFun1():
@@ -24,6 +24,9 @@ def testFun5():
 def testFun6():
     print('Function 6')
 
+def reloadAll():
+    ssys.SuperReload().removeAll()
+
 
 ONEKEYLIST = {
         'testFuctionscript1' : (testFun1, 'Function 1'),
@@ -32,5 +35,6 @@ ONEKEYLIST = {
         'testFuctionscript4' : (testFun4, 'Function 4'),
         'testFuctionscript5' : (testFun5, 'Function 5'),
         'testFuctionscript6' : (testFun6, 'Function 6'),
+        'Reload All' : (reloadAll, 'Super reload'),
         }
 
