@@ -17,11 +17,17 @@ def intoMayaMain(win):
     win.setParent(WIN_MAYA_MAIN)
 
 def setStyle(obj, f='main'):
-    path_style_dir = __file__[:-13] + 'resource\\style'
+    path_style_dir = __file__[:-12] + 'resource\\style'
     path_style_file = '%s\\%s.qss'%(path_style_dir, f)
     qfile = open(path_style_file, 'rb')
     obj.setStyleSheet(qfile.read())
     qfile.close()
+
+def moveRelative(posMove, obj, relative=None):
+    if not relative:
+        relative = obj.parent()
+    size_p = relative.size()
+    obj.move(size_p.width()*posMove[0], size_p.height()*posMove[1])
 
 
 class VeiwPlus(QtWidgets.QAbstractItemView):

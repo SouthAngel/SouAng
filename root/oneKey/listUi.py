@@ -14,7 +14,7 @@ class IndexMain(sgui.DragMove, QtWidgets.QFrame):
     def __init__(self):
         super(IndexMain, self).__init__()
         self.view_list = IndexListView()
-        self.line_search = QtWidgets.QLineEdit()
+        self.line_search = SearchLine()
         sgui.intoMayaMain(self)
         self.initSet()
 
@@ -26,8 +26,10 @@ class IndexMain(sgui.DragMove, QtWidgets.QFrame):
         self.setDrived([self])
         self.setFrameShape(self.Panel)
         self.setFrameShadow(self.Sunken)
+        self.setFixedSize(486, 184)
         self.setObjectName('testGreen')
         sgui.setStyle(self)
+        sgui.moveRelative((0.52, 0.68), self)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.popMenu)
         print('initSet')
@@ -36,12 +38,28 @@ class IndexMain(sgui.DragMove, QtWidgets.QFrame):
         menu = QtWidgets.QMenu()
         actions = (
                 ('Close', self.close),
+                ('UiConfig', self.configUi),
                 )
         for each in actions:
             action = QtWidgets.QAction(each[0], self)
             action.triggered.connect(each[1])
             menu.addAction(action)
         menu.exec_(self.mapToGlobal(pos))
+
+    def configUi(self):
+        print(self.size(), self.pos())
+
+    def focusOutEvent(self, event):
+        print('Focus out')
+
+class SearchLine(QtWidgets.QLineEdit):
+
+    def __init__(self):
+        super(SearchLine, self).__init__()
+
+    def focusOutEvent(self, event):
+        super(SearchLine, self).focusOutEvent(event)
+        print('focusOutEvent')
 
 
 class IndexListView(QtWidgets.QListView):
@@ -52,6 +70,8 @@ class IndexListView(QtWidgets.QListView):
         self.setViewMode(self.IconMode)
         self.setMovement(self.Static)
         self.setSpacing(4)
+        self.model().findKeys('')
+        self.setResizeMode(self.Adjust)
 #         self.setGridSize(QtCore.QSize(32, 32))
 
 
@@ -61,7 +81,6 @@ class IndexListModel(QtGui.QStandardItemModel):
         super(IndexListModel, self).__init__()
         self.dict_config = functions.ONEKEYLIST
         self.included = {}
-        self.findKeys('')
 
     def update(self):
         self.clear()
