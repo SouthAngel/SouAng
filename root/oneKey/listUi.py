@@ -32,7 +32,6 @@ class IndexMain(sgui.DragMove, QtWidgets.QFrame):
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.popMenu)
         self.line_search.textChanged.connect(self.view_list.mod.findKeys)
-        print('initSet')
 
     def popMenu(self, pos):
         menu = QtWidgets.QMenu()
@@ -59,11 +58,6 @@ class SearchLine(QtWidgets.QLineEdit):
     def __init__(self):
         super(SearchLine, self).__init__()
 
-    def focusOutEvent(self, event):
-        super(SearchLine, self).focusOutEvent(event)
-        self.parent().close()
-
-
 class IndexListView(QtWidgets.QListView):
 
     def __init__(self):
@@ -80,6 +74,7 @@ class IndexListView(QtWidgets.QListView):
 
     def on_clicked(self, index):
         self.mod.included[index.data()][0]()
+        self.parent().close()
 
 
 class IndexListModel(QtGui.QStandardItemModel):
@@ -98,7 +93,6 @@ class IndexListModel(QtGui.QStandardItemModel):
             item.setSelectable(0)
             item.setBackground(brush_bg)
             self.appendRow(item)
-        print('update')
 
     def findKeys(self, keyWord):
         self.included.clear()
@@ -109,3 +103,4 @@ class IndexListModel(QtGui.QStandardItemModel):
         else:
             self.included = copy.deepcopy(self.dict_config)
         self.update()
+        print('Search %s'%keyWord)

@@ -19,6 +19,7 @@ def intoMayaMain(win):
 def setStyle(obj, f='main'):
     path_style_dir = __file__[:-12] + 'resource\\style'
     path_style_file = '%s\\%s.qss'%(path_style_dir, f)
+    print("Using style file: %s"%path_style_file)
     qfile = open(path_style_file, 'rb')
     obj.setStyleSheet(qfile.read())
     qfile.close()
