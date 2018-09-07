@@ -11,15 +11,14 @@ from shiboken2 import wrapInstance
 
 
 WIN_MAYA_MAIN = wrapInstance(long(mui.MQtUtil.mainWindow()), QtWidgets.QMainWindow)
-
+__cpath__ = '\\'.join(__file__.split('\\')[:-1])
 
 def intoMayaMain(win):
     win.setParent(WIN_MAYA_MAIN)
 
 def setStyle(obj, f='main'):
-    path_style_dir = __file__[:-12] + 'resource\\style'
+    path_style_dir = __cpath__[:-4] + 'resource\\style'
     path_style_file = '%s\\%s.qss'%(path_style_dir, f)
-    print("Using style file: %s"%path_style_file)
     qfile = open(path_style_file, 'rb')
     obj.setStyleSheet(qfile.read())
     qfile.close()
