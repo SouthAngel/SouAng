@@ -4,6 +4,7 @@
 # E-mail: southAngel@126.com 
 # Time: 2018-09-05 02:29 
 from SouAng.smod import ssys, smaya
+from ..functionsCollection import postion
 
 
 def testFun1():
@@ -21,8 +22,8 @@ def testFun4():
 def testFun5():
     print('Function 5')
 
-def testFun6():
-    print('Function 6')
+def zeroTR():
+    postion.zeroTR()
 
 def reloadAll():
     ssys.SuperReload().removeAll()
@@ -34,7 +35,7 @@ ONEKEYLIST = {
         'testFuctionscript3' : (testFun3, 'Function 3'),
         'testFuctionscript4' : (testFun4, 'Function 4'),
         'testFuctionscript5' : (testFun5, 'Function 5'),
-        'testFuctionscript6' : (testFun6, 'Function 6'),
+        'Reset Pos' : (zeroTR, 'Reset pos'),
         'Reload All' : (reloadAll, 'Super reload'),
         }
 

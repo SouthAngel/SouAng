@@ -22,3 +22,36 @@ def simpleWarn(message='Get some wrong!'):
 
 def gEvalPy(script):
     return mel.eval('python("%s");'%script.replace('\n', '\\n'))
+
+class Sel(object):
+
+    def __init__(self, list_sel=None):
+        super(Sel, self).__init__()
+        if list_sel:
+            self.sel = list_sel
+        else:
+            self.sel = cmds.ls(sl=1)
+
+    def toTransform(self):
+        res = []
+        for each in iter(self.sel):
+            if cmds.nodeType(each) == 'transform':
+                res.append(each)
+            else:
+                res.extend(cmds.listRelatives(each, p=1))
+        return res
+
+    def toShape(self, inm=0):
+        res = []
+        for each in iter(self.sel):
+            if cmds.nodeType(each) == 'mesh':
+                res.append(each)
+            else:
+                res.extend(cmds.listRelatives(each, ad=1, type='mesh'))
+        if inm:
+            res = self.filterIn(res)
+        return res
+
+    @staticmethod
+    def filterIn(objs):
+        return filter(lambda x: cmds.getAttr('%s.intermediateObject'%x) != 1, objs)
