@@ -13,14 +13,14 @@ def testFun1():
 def testFun2():
     print('Function 2')
 
-def testFun3():
-    print('Function 3')
+def resetToCenterFreeze():
+    postion.resetToCenterFreeze()
 
-def testFun4():
-    print('Function 4')
+def resetToZero():
+    postion.resetToZero()
 
-def testFun5():
-    print('Function 5')
+def matchWorldPos():
+    postion.matchWorldPos()
 
 def zeroTR():
     postion.zeroTR()
@@ -32,9 +32,9 @@ def reloadAll():
 ONEKEYLIST = {
         'testFuctionscript1' : (testFun1, 'Function 1'),
         'testFuctionscript2' : (testFun2, 'Function 2'),
-        'testFuctionscript3' : (testFun3, 'Function 3'),
-        'testFuctionscript4' : (testFun4, 'Function 4'),
-        'testFuctionscript5' : (testFun5, 'Function 5'),
+        'Center Freeze' : (resetToCenterFreeze, 'Reset to object center and freeze pos'),
+        'Reset Zero' : (resetToZero, 'Reset to world zero'),
+        'Match Pos' : (matchWorldPos, 'Match object to world pos'),
         'Reset Pos' : (zeroTR, 'Reset pos'),
         'Reload All' : (reloadAll, 'Super reload'),
         }
