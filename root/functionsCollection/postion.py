@@ -4,7 +4,7 @@
 # E-mail: southAngel@126.com 
 # Time: 2018-09-08 09:17 
 from maya import cmds
-from smod import smaya
+from SouAng.smod import smaya
 
 
 ATTR_TRS = (

@@ -23,6 +23,16 @@ def simpleWarn(message='Get some wrong!'):
 def gEvalPy(script):
     return mel.eval('python("%s");'%script.replace('\n', '\\n'))
 
+# Node and attribute
+def splitAttrName(name_attr):
+    pos_dot = name_attr.find('.')
+    return name_attr[:pos_dot], name_attr[pos_dot+1:]
+
+def mAttr(node, attr):
+    return '%s.%s'%(node, attr)
+
+
+# selected
 class Sel(object):
 
     def __init__(self, list_sel=None):
@@ -55,3 +65,5 @@ class Sel(object):
     @staticmethod
     def filterIn(objs):
         return filter(lambda x: cmds.getAttr('%s.intermediateObject'%x) != 1, objs)
+
+
