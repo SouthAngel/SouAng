@@ -54,10 +54,11 @@ class GenratorCodeC(object):
                 if attr_type in  GenratorCodeC.ALLOW_ATTR_TYPE:
                     attr_n = cmds.getAttr('%s.%s'%(node, attr))
                     attr_d = cmds.attributeQuery(attr, n=node, ld=1)
-                    print('%s %s %s'%(attr, attr_d, attr_type))
                     if attr_type == 'typed':
-                        if attr_n and cmds.setAttr('%s.%s'%(node)) == 'string':
-                            res_str += 'cmds.setAttr(\'%s.{}\'%{}_node, \'{}\', type=\'string\')\n'.format(attr, node, attr_n)
+                        if attr_n:
+                            attr_data_type = cmds.addAttr('%s.%s'%(node, attr), q=1, dt=1)
+                            if attr_data_type!=None and attr_data_type[0] == 'string':
+                                res_str += 'cmds.setAttr(\'%s.{}\'%{}_node, \'{}\', type=\'string\')\n'.format(attr, node, attr_n)
                     elif attr_n != attr_d[0]:
                         res_str += 'cmds.setAttr(\'%s.{}\'%{}_node, {})\n'.format(attr, node, attr_n)
         return res_str
@@ -90,8 +91,7 @@ class GenratorCodeC(object):
                     else:
                         res_str += 'cmds.addAttr({}_node, ln=\'{}\', nn=\'{}\', at=\'{}\')\n'.format(node, attr, name_nn,
                                 attr_type)
-                res_str += 'cmds.setAttr(\'%s.{}\'%{}_node, e=1, keyable=1)'.format(attr, node)
-        print(res_str)
+                res_str += 'cmds.setAttr(\'%s.{}\'%{}_node, e=1, keyable=1)\n'.format(attr, node)
         return res_str
 
     @staticmethod
