@@ -5,6 +5,7 @@
 # Time: 2018-08-27 09:21 
 from maya import cmds, mel
 from SouAng.smod import ssys
+from . import rig
 
 # Bind to mel command
 class BindObj(object):
@@ -14,6 +15,9 @@ class BindObj(object):
 
     def testPrint(self):
         print("Test function")
+
+    def rigToolSA(self):
+        rig.SAWIN.show()
 
 
 # Bind method

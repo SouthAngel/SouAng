@@ -29,6 +29,12 @@ def moveRelative(posMove, obj, relative=None):
     size_p = relative.size()
     obj.move(size_p.width()*posMove[0], size_p.height()*posMove[1])
 
+def safeGet(val, defaultValue=0):
+    if val:
+        return val
+    else:
+        return defaultValue
+
 
 class VeiwPlus(QtWidgets.QAbstractItemView):
 
@@ -71,3 +77,57 @@ class DragMove(object):
         vector_moved = event.globalPos() - self.posWhenPressed
         for i, each in enumerate(self.drived):
             each.move(self.posDrviedWhenPressed[i]+vector_moved)
+
+
+class ButtonArrayLayout(QtWidgets.QGridLayout):
+
+    def __init__(self, info=None, lineCoun=3, dirction=0):
+        super(ButtonArrayLayout, self).__init__()
+        self.info = safeGet(info, 
+                [
+                    ('b1', self.printInfo), 
+                    ('b2', self.printInfo), 
+                    ('b3', self.printInfo)
+                    ]
+                )
+        self.lineCount = 3
+        # 1 vertical 0 horizontal
+        self.dirction = 0
+        self.build()
+
+    def build(self):
+        len_btns = len(self.info)
+        list_divide = [x/self.lineCount for x in xrange(len_btns)]
+        list_remainder = [x%self.lineCount for x in xrange(len_btns)]
+        if self.dirction:
+            col_list = list_divide
+            row_list = list_remainder
+        else:
+            col_list = list_remainder
+            row_list = list_divide
+        for i in xrange(len_btns):
+            btn = QtWidgets.QPushButton(self.info[i][0])
+            btn.clicked.connect(self.info[i][1])
+            self.addWidget(btn, row_list[i], col_list[i])
+
+    def printInfo(self):
+        print(self.sender(), self.count())
+
+
+class ButtonTextLayout(QtWidgets.QHBoxLayout):
+    clicked = QtCore.Signal(unicode)
+
+    def __init__(self, button='button', slot=None, defaultText=''):
+        super(ButtonTextLayout, self).__init__()
+        self.button = QtWidgets.QPushButton(button)
+        self.line = QtWidgets.QLineEdit(defaultText)
+        self.button.clicked.connect(self.on_button_clicked)
+        self.clicked.connect(safeGet(slot, self.printInfo))
+        self.addWidget(self.button)
+        self.addWidget(self.line)
+
+    def on_button_clicked(self):
+        self.clicked.emit(self.line.text())
+
+    def printInfo(self, *args):
+        print(self.sender(), args)
