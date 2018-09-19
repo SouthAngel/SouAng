@@ -93,6 +93,7 @@ class ButtonArrayLayout(QtWidgets.QGridLayout):
         self.lineCount = 3
         # 1 vertical 0 horizontal
         self.dirction = 0
+        self.setSpacing(2)
         self.build()
 
     def build(self):
@@ -125,6 +126,7 @@ class ButtonTextLayout(QtWidgets.QHBoxLayout):
         self.clicked.connect(safeGet(slot, self.printInfo))
         self.addWidget(self.button)
         self.addWidget(self.line)
+        self.setSpacing(1)
 
     def on_button_clicked(self):
         self.clicked.emit(self.line.text())

@@ -18,6 +18,12 @@ def randPos(rad=None, xyz=None):
     gen_pos = randVector(rad, xyz)
     cmds.move(gen_pos[0], gen_pos[1], gen_pos[2])
 
+def centerPivot():
+    cmds.xform(cpc=1)
+
+def freezeTransform():
+    cmds.makeIdentity(apply=1, t=1, r=1, s=1, jo=1, n=0, pn=1)
+
 def zeroTR():
     sel = smaya.Sel().toTransform()
     for each in iter(sel):
@@ -28,13 +34,19 @@ def resetToCenterFreeze():
     sel = cmds.ls(sl=1)
     for each in iter(sel):
         cmds.xform(each, cpc=1)
-        cmds.makeIdentity(apply=1, t=1, r=1, s=1, n=0, pn=1)
+        cmds.makeIdentity(each, apply=1, t=1, r=1, s=1, n=0, pn=1)
+
+def moveWorldZero():
+    sel = cmds.ls(sl=1)
+    for each in iter(sel):
+        nowPos = cmds.xform(each, q=1, ws=1, rp=1)
+        cmds.xform(each, ws=1, t=(-nowPos[0], -nowPos[1], -nowPos[2]))
 
 def resetToZero():
     sel = cmds.ls(sl=1)
     for each in iter(sel):
         cmds.xform(each, ws=1, rp=[0, 0, 0], sp=[0, 0, 0])
-        cmds.makeIdentity(apply=1, t=1, r=1, s=1, n=0, pn=1)
+        cmds.makeIdentity(each, apply=1, t=1, r=1, s=1, n=0, pn=1)
 
 def matchWorldPos():
     sel = cmds.ls(sl=1)

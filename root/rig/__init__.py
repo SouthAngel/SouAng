@@ -28,7 +28,7 @@ class RigUi(QtWidgets.QDialog):
         lo = QtWidgets.QGridLayout()
         parallel_num = 2
         for n, each in enumerate(scmds.BUTTONLINE_LIST):
-            bl = sgui.ButtonTextLayout(each[0], each[1])
+            bl = sgui.ButtonTextLayout(each[0], each[1], each[2])
             lo.addLayout(bl, n/parallel_num, n%parallel_num)
         return lo
 
