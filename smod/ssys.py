@@ -50,6 +50,12 @@ def splitPathEx(path, s=-2, e=-1):
             path_res += list_path_split[i]
     return path_res
 
+# Safe method
+def safeGet( *args ):
+    for each in iter(args):
+        if each:
+            return each
+
 # Try decorator
 def trywarp( fun ):
     def _mid( *args, **kwargs ):

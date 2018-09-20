@@ -6,7 +6,7 @@
 # Time: 2018-09-19 15:03 
 from PySide2 import QtWidgets, QtGui, QtCore
 from SouAng.smod import sgui
-from . import scmds
+from . import scmds, component
 
 class RigUi(QtWidgets.QDialog):
 
@@ -18,6 +18,7 @@ class RigUi(QtWidgets.QDialog):
         lo = QtWidgets.QVBoxLayout()
         lo.addLayout(self.addButtons())
         lo.addLayout(self.addButtonLines())
+        lo.addLayout(component.AttrConnect())
         self.setLayout(lo)
         self.setWindowTitle('SouAng Rigging Tool')
 

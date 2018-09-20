@@ -5,6 +5,7 @@
 # Time: 2018-09-19 17:11 
 from maya import cmds
 import pymel.core as pm
+from SouAng.smod import ssys
 from ..functionsCollection import postion
 
 
@@ -12,13 +13,30 @@ def orientChildrenJoints():
     joints = cmds.listRelatives(ad=1, type='joint')
     cmds.makeIdentity(joints, jo=1)
 
-def buttonF2():
-    print('F2')
+def grpZeroTheObj():
+    sel = cmds.ls(sl=1)
+    if sel:
+        for each in sel:
+            parent_list = cmds.listRelatives(each, p=1)
+            if parent_list:
+                nowPos = cmds.getAttr('%s.t'%each)[0]
+                nowRot = cmds.getAttr('%s.r'%each)[0]
+                newGrp = cmds.group(em=1, p=parent_list[0])
+                cmds.xform(newGrp, r=1, t=nowPos, ro=nowRot)
+                cmds.parent(each, newGrp)
 
 def buttonF3():
     print('F3')
 
-def buttonlF1(text):
+def jjjIkFkSet(text):
+    sel = cmds.ls(sl=1)
+    if len(sel) < 4:
+        return 0
+    ikfk_c = sel[0]
+    ikfkAttr = text
+    origin_j = [None for i in xrange(3)]
+    ik_j = [None for i in xrange(3)]
+    fk_j = [None for i in xrange(3)]
     print('F1', text)
 
 def buttonlF2(text):
@@ -64,10 +82,11 @@ BUTTON_LIST = (
         ('Move World Center', postion.moveWorldZero),
         ('Add Middle Joint', JointSegment().joinParent),
         ('Orient All Joint', orientChildrenJoints),
+        ('Zero Parent Group', grpZeroTheObj),
         )
 BUTTONLINE_LIST = (
         ('Add Mult Joint', JointSegment().joinParentEx, '2'),
-        ('F1', buttonlF1, 'd1'),
+        ('IKFK Set', jjjIkFkSet, 'IKFK'),
         ('F2', buttonlF2, 'd2'),
         ('F3', buttonlF3, 'd3'),
         )

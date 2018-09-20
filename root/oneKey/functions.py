@@ -5,7 +5,7 @@
 # Time: 2018-09-05 02:29 
 from maya import cmds
 from SouAng.smod import ssys, smaya
-from ..functionsCollection import postion
+from ..functionsCollection import postion, nodeConnect
 
 
 def testFun1():
@@ -42,5 +42,6 @@ ONEKEYLIST = {
         'Match Pos' : (matchWorldPos, 'Match object to world pos'),
         'Reset Pos' : (zeroTR, 'Reset pos'),
         'Reload All' : (reloadAll, 'Super reload'),
+        'Generate Code' : (nodeConnect.GenratorCodeC().generate, 'Generate code from connections'),
         }
 
