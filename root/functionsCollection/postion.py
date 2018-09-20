@@ -50,11 +50,8 @@ def resetToZero():
 
 def matchWorldPos():
     sel = cmds.ls(sl=1)
-    len_sel = len(sel)
-    if len_sel > 1:
-        end_sel = sel[len_sel-1]
-        for i in xrange(len_sel-1):
-            cmds.delete(cmds.parentConstraint(end_sel, sel[i], mo=0))
+    if len(sel) > 1:
+        cmds.delete(cmds.parentConstraint(sel[1], sel[0], mo=0))
 
 if __name__ == '__main__':
     print('Run in main')

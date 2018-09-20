@@ -7,6 +7,7 @@ from maya import cmds
 import pymel.core as pm
 from SouAng.smod import ssys
 from ..functionsCollection import postion
+from . import limbJoint
 
 
 def orientChildrenJoints():
@@ -25,19 +26,20 @@ def grpZeroTheObj():
                 cmds.xform(newGrp, r=1, t=nowPos, ro=nowRot)
                 cmds.parent(each, newGrp)
 
-def buttonF3():
-    print('F3')
+def posCircle():
+    sel = cmds.ls(sl=1)
+    for i in xrange(len(sel)):
+        newC = cmds.circle(c=(0, 0, 0), nr=(0, 1, 0), sw=360, r=1, d=3, ut=0, tol=0.01, s=8, ch=1)
+        cmds.delete(cmds.parentConstraint(sel[i], newC, mo=0))
+
+def posLocator():
+    sel = cmds.ls(sl=1)
+    for i in xrange(len(sel)):
+        newC = cmds.spaceLocator()
+        cmds.delete(cmds.parentConstraint(sel[i], newC, mo=0))
 
 def jjjIkFkSet(text):
-    sel = cmds.ls(sl=1)
-    if len(sel) < 4:
-        return 0
-    ikfk_c = sel[0]
-    ikfkAttr = text
-    origin_j = [None for i in xrange(3)]
-    ik_j = [None for i in xrange(3)]
-    fk_j = [None for i in xrange(3)]
-    print('F1', text)
+    limbJoint.JointSetIkFk().jjjIkFkSet(text)
 
 def buttonlF2(text):
     print('F2', text)
@@ -76,6 +78,7 @@ class JointSegment(object):
 
 
 BUTTON_LIST = (
+        ('Match Postion', postion.matchWorldPos, ''),
         ('Zero Postion', postion.zeroTR, ''),
         ('Center And Freeze', postion.resetToCenterFreeze),
         ('World Center And Freeze', postion.resetToZero),
@@ -83,6 +86,8 @@ BUTTON_LIST = (
         ('Add Middle Joint', JointSegment().joinParent),
         ('Orient All Joint', orientChildrenJoints),
         ('Zero Parent Group', grpZeroTheObj),
+        ('Match Postion Circle', posCircle),
+        ('Match Postion Locator', posLocator),
         )
 BUTTONLINE_LIST = (
         ('Add Mult Joint', JointSegment().joinParentEx, '2'),

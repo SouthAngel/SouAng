@@ -31,6 +31,8 @@ def splitAttrName(name_attr):
 def mAttr(node, attr):
     return '%s.%s'%(node, attr)
 
+def filterType(objects, type='transform'):
+    return filter(lambda x: cmds.objectType(x)==type, objects)
 
 # selected
 class Sel(object):

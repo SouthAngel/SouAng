@@ -4,7 +4,7 @@
 # E-mail: 1932554894@qq.com 
 # Time: 2018-08-26 19:13 
 from maya import cmds
-from SouAng.smod import ssys
+from SouAng.smod import ssys, smaya
 
 
 # Menu command
@@ -21,6 +21,16 @@ def oneKeyShow():
     from SouAng.root import oneKey
     oneKey.SWIN.show()
 
+def rigToolSA():
+    from SouAng.root import rig
+    rig.SAWIN.show()
+
+def runTempFile():
+    file_path = ssys.os.path.join(ssys.os.path.dirname(__file__), 'writeTemp.py')
+    script = 'execfile(\'%s\')'%file_path.replace('\\', '/')
+    print(script)
+    smaya.gEvalPy(script)
+
 
 class InitUi(object):
     NAME_LABEL = 'SouAng'
@@ -31,14 +41,18 @@ class InitUi(object):
             ('', 'Tools Find'),
             ('', 'Collection'),
             ('oneKeyShow', 'One Key'),
+            ('rigToolSA', 'Rig Tool'),
             ('refresh', 'Refresh'),
+            ('runTempFile', 'Test File'),
             )
     LIST_SHELF = (
             ('listAllShow', 'List'),
             ('', 'Find'),
             ('', 'Collection'),
             ('oneKeyShow', 'One Key'),
+            ('rigToolSA', 'Rig Tool'),
             ('refresh', 'Refresh'),
+            ('runTempFile', 'Test File'),
             )
 
     def __init__(self):
