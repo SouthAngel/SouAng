@@ -23,7 +23,7 @@ def oneKeyShow():
 
 def rigToolSA():
     from SouAng.root import rig
-    rig.SAWIN.show()
+    rig.show()
 
 def runTempFile():
     file_path = ssys.os.path.join(ssys.os.path.dirname(__file__), 'writeTemp.py')

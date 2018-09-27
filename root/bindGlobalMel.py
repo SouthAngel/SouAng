@@ -17,7 +17,7 @@ class BindObj(object):
         print("Test function")
 
     def rigToolSA(self):
-        rig.SAWIN.show()
+        rig.show()
 
 
 # Bind method

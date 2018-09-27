@@ -6,8 +6,15 @@
 from maya import cmds
 
 
+# Node math
+def isText(inputObj):
+    if isinstance(inputObj, unicode) or isinstance(inputObj, str):
+        return 1
+    else:
+        return 0
+
 def setOrConnect(attr1, attr2):
-    if isinstance(attr1, str):
+    if isText(attr1):
         cmds.connectAttr(attr1, attr2, f=1)
     else:
         cmds.setAttr(attr2, attr1)
@@ -16,7 +23,7 @@ def add( *args ):
     if not args:
         return ''
     node = cmds.createNode('plusMinusAverage')
-    if isinstance(args[0], str):
+    if isText(args[0]):
         ele_num = 1
     else:
         ele_num = len(args[0])
@@ -41,7 +48,7 @@ def ave( *args ):
 
 def mult(attr1, attr2):
     node = cmds.createNode('multiplyDivide')
-    if isinstance(attr1, str):
+    if isText(attr1):
         setOrConnect(attr1, '%s.input1'%node)
         setOrConnect(attr2, '%s.input2'%node)
     else:
@@ -60,6 +67,27 @@ def pow(attr1, attr2):
     node = mult(attr1, attr2)
     cmds.setAttr('%s.operation'%node, 2)
     return node
+
+# Distance node
+def distanceObjs(obj1, obj2):
+    loc = (cmds.spaceLocator()[0], cmds.spaceLocator()[0])
+    distance_node = cmds.createNode('distanceBetween')
+    cmds.parent(loc[0], obj1)
+    cmds.parent(loc[1], obj2)
+    cmds.setAttr('%s.t'%loc[0], 0, 0, 0)
+    cmds.setAttr('%s.t'%loc[1], 0, 0, 0)
+    cmds.connectAttr('%s.worldPosition[0]'%loc[0], '%s.point1'%distance_node, f=1)
+    cmds.connectAttr('%s.worldPosition[0]'%loc[1], '%s.point2'%distance_node, f=1)
+    return distance_node, loc[0], loc[1]
+
+# Constraint node
+def getWorldPos(obj):
+    p_node = cmds.createNode('pointConstraint')
+    cmds.connectAttr('%s.translate'%obj, '%s.target[0].targetTranslate'%p_node, f=1)
+    cmds.connectAttr('%s.parentMatrix'%obj, '%s.target[0].targetParentMatrix'%p_node, f=1)
+    cmds.connectAttr('%s.rotatePivot'%obj, '%s.target[0].targetRotatePivot'%p_node, f=1)
+    cmds.connectAttr('%s.rotatePivotTranslate'%obj, '%s.target[0].targetRotateTranslate'%p_node, f=1)
+    return '%s.constraintTranslate'%p_node
 
 
 if __name__ == '__main__':

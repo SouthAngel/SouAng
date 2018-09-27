@@ -88,6 +88,7 @@ BUTTON_LIST = (
         ('Zero Parent Group', grpZeroTheObj),
         ('Match Postion Circle', posCircle),
         ('Match Postion Locator', posLocator),
+        ('Ik Stretch Set', limbJoint.JointSetIkFk.ikStretch),
         )
 BUTTONLINE_LIST = (
         ('Add Mult Joint', JointSegment().joinParentEx, '2'),

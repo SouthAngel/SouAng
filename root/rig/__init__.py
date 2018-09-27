@@ -34,4 +34,10 @@ class RigUi(QtWidgets.QDialog):
         return lo
 
 
-SAWIN = RigUi()
+SAWIN = None
+
+def show():
+    global SAWIN
+    if not SAWIN:
+        SAWIN = RigUi()
+    SAWIN.show()
